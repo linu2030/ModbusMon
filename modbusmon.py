@@ -129,6 +129,7 @@ while True:
             MqttPahoClient.publish("raspberrypi/chargingcurrent/value",ChargingCurrent)
             MqttPahoClient.publish("raspberrypi/chargingpower/value",ChargingPower)
             MqttPahoClient.publish("raspberrypi/batterylevel/value",Batterylevel)
+            MqttPahoClient.publish("raspberrypi/chargingmode/value",ChargeMode)
             time.sleep(RefreshTime)
             goto(3)              
             
