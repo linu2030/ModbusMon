@@ -1,13 +1,16 @@
 import minimalmodbus
 import time
 import paho.mqtt.client as mqtt
+from contextlib import redirect_stdout
 
 #PORT='COM3'
 PORT='/dev/ttyUSB0'
 SlaveAddress=1
 RefreshTime=2
+RetryTime=5
 broker_address="homeassistant.local"
 MqttClientID="MPPT"
+LogFileName="modbusmon.py.txt"
 
 MqttUser= "Tamim"
 MqttPw="8478b4bbB300."
@@ -35,11 +38,14 @@ def goto(linenum):
 
 def on_connect(client, userdata, flags, rc):
     if rc==0:
-        print("connected ok")
+        with open(LogFileName, 'w') as f:
+            with redirect_stdout(f):
+                print("connected ok")
 
 def on_message(client, userdata, flags):
-  
-    print(str(message.payload.decode("utf-8")))
+    with open(LogFileName, 'w') as f:
+        with redirect_stdout(f):
+            print(str(message.payload.decode("utf-8")))
 
 line = 1
 while True:
@@ -55,16 +61,19 @@ while True:
             instrument.serial.timeout  = 1          # seconds
             goto(2)
         except Exception as e:
-            print(e)
-            print('Error: Set up instrument retry again in 25s..')
-            time.sleep(25)
+            with open(LogFileName, 'w') as f:
+                with redirect_stdout(f):
+                    print(e)
+                    print('Error: Set up instrument retry again in 25s..')
+            time.sleep(RetryTime)
             goto(1)
 
 
     elif line == 2:
         try:
-           
-            print('Starting MQTT')
+            with open(LogFileName, 'w') as f:
+                with redirect_stdout(f):
+                    print('Starting MQTT')
             
             global MqttPahoClient 
             MqttPahoClient = mqtt.Client(MqttClientID, transport="tcp", protocol=4) 
@@ -77,20 +86,17 @@ while True:
             #MqttPahoClient.loop_start()
             #MqttPahoClient.loop_forever() #start the loop
             goto(3)
-
-
           
         except Exception as e:
-            print(e)
-            print('Error: creat mqtt client retry again in 25s..')           
-            time.sleep(25)
+            with open(LogFileName, 'w') as f:
+                with redirect_stdout(f):
+                    print(e)
+                    print('Error: creat mqtt client retry again in 25s..')           
+            time.sleep(RetryTime)
             goto(1)
    
     elif line == 3:
         try:
-         
-            
-        
             l = instrument.read_registers(0, 16, 3 )
             ChargeMode= l[0] 
             PVinputVoltage=l[1] /10 
@@ -137,16 +143,21 @@ while True:
             
         except Exception as e:
             goto(1)
-            print('Error: Read instrument retry again in 25s..')
+            with open(LogFileName, 'w') as f:
+                with redirect_stdout(f):
+                    print(e)
+                    print('Error: Read instrument retry again in %s..', RetryTime)
 
-            time.sleep(25)
+            time.sleep(RetryTime)
             goto(1)
 
     elif line == 20:
         instrument.serial.close()
         break
     elif line == 100:
-        print ("You're annoying me - answer the question!")
+        with open(LogFileName, 'w') as f:
+            with redirect_stdout(f):
+                print ("Nothing to Do ...")
         goto(1)
 
 
