@@ -159,5 +159,3 @@ while True:
             with redirect_stdout(f):
                 print ("Nothing to Do ...")
         gotto(1)
-
-#print('The humidity is: %.1f percent\r' % humidity)
