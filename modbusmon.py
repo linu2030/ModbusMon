@@ -12,8 +12,8 @@ broker_address="homeassistant.local"
 MqttClientID="MPPT"
 LogFileName="modbusmon.py.txt"
 
-MqttUser= "Tamim"
-MqttPw="8478b4bbB300."
+MqttUser= "UserName"
+MqttPw="Password"
 StopAsyncIteration()
 
 ChargeMode=0 
@@ -64,7 +64,7 @@ while True:
             with open(LogFileName, 'w') as f:
                 with redirect_stdout(f):
                     print(e)
-                    print('Error: Set up instrument retry again in 25s..')
+                    print('Error: Set up instrument retry again')
             time.sleep(RetryTime)
             goto(1)
 
@@ -91,7 +91,7 @@ while True:
             with open(LogFileName, 'w') as f:
                 with redirect_stdout(f):
                     print(e)
-                    print('Error: creat mqtt client retry again in 25s..')           
+                    print('Error: creat mqtt client retry again ..')           
             time.sleep(RetryTime)
             goto(1)
    
@@ -146,7 +146,7 @@ while True:
             with open(LogFileName, 'w') as f:
                 with redirect_stdout(f):
                     print(e)
-                    print('Error: Read instrument retry again in %s..', RetryTime)
+                    print('Error: Read instrument retry again')
 
             time.sleep(RetryTime)
             goto(1)
@@ -158,28 +158,6 @@ while True:
         with open(LogFileName, 'w') as f:
             with redirect_stdout(f):
                 print ("Nothing to Do ...")
-        goto(1)
-
-
-
-    
-
-
-# Good practice
-#instrument.close_port_after_each_call = True
-
-#instrument.clear_buffers_before_each_transaction = True
-
-# Read temperatureas a float
-# if you need to read a 16 bit register use instrument.read_register()
-
-
-#temperature = instrument.write_registers(0, 16, 3 )
-
-
-# Read the humidity
-#humidity = instrument.read_float(HUM_REGISTER)
-
-#Pront the values
+        gotto(1)
 
 #print('The humidity is: %.1f percent\r' % humidity)
